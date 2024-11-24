@@ -15,8 +15,7 @@ class MyMainPage extends StatefulWidget {
 
 class _MyWidgetState extends State<MyMainPage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<ToDo> _todoList = []; // List menggunakan model ToDo
-
+  List<ToDo> _todoList = [];
   @override
   void initState() {
     super.initState();
@@ -24,7 +23,6 @@ class _MyWidgetState extends State<MyMainPage> {
   }
 
   void _refreshData() async {
-    // Ambil data dari database dan mapping ke model ToDo
     final data = await dbHelper.queryAllRows();
     setState(() {
       _todoList = data.map((item) => ToDo.fromMap(item)).toList();
@@ -33,18 +31,15 @@ class _MyWidgetState extends State<MyMainPage> {
 
   void _toggleToDoStatus(ToDo todo) {
     setState(() {
-      todo.isDone = !todo.isDone; // Ubah status isDone
+      todo.isDone = !todo.isDone;
     });
 
-    // Update status di database
     dbHelper.update(todo.toMap());
   }
 
   void _deleteToDoItem(int id) {
-    // Hapus item dari database
     dbHelper.delete(id);
 
-    // Perbarui list di UI
     setState(() {
       _todoList.removeWhere((item) => item.id == id);
     });
@@ -78,7 +73,7 @@ class _MyWidgetState extends State<MyMainPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            SizedBox(height: 60.0), 
+            SizedBox(height: 60.0),
             Expanded(
               child: ListView.builder(
                 itemCount: _todoList.length,
@@ -86,9 +81,8 @@ class _MyWidgetState extends State<MyMainPage> {
                   final todo = _todoList[index];
                   return ToDoItem(
                     todo: todo,
-                    onToDoChanged:
-                        _toggleToDoStatus, 
-                    onDeleteItem: _deleteToDoItem, 
+                    onToDoChanged: _toggleToDoStatus,
+                    onDeleteItem: _deleteToDoItem,
                   );
                 },
               ),
@@ -102,7 +96,7 @@ class _MyWidgetState extends State<MyMainPage> {
             context,
             MaterialPageRoute(builder: (context) => const TambahTugasPage()),
           ).then((_) {
-            _refreshData(); 
+            _refreshData();
           });
         },
         child: const Icon(Icons.add),
