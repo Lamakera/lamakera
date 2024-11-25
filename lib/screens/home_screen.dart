@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamakera/helper/db_helper.dart';
 import 'add_task_screen.dart';
+import 'package:lamakera/styles/fonts.dart';
 import 'package:lamakera/styles/colors.dart';
 import '../model/todo.dart';
 import '../widget/todo_item.dart';
@@ -15,7 +16,9 @@ class MyMainPage extends StatefulWidget {
 
 class _MyWidgetState extends State<MyMainPage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<ToDo> _todoList = [];
+  List<ToDo> _todoList = []; // List untuk tugas yang belum selesai
+  List<ToDo> _completedTodoList = []; // List untuk tugas yang sudah selesai
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +28,15 @@ class _MyWidgetState extends State<MyMainPage> {
   void _refreshData() async {
     final data = await dbHelper.queryAllRows();
     setState(() {
-      _todoList = data.map((item) => ToDo.fromMap(item)).toList();
+      // Memetakan data ke dalam daftar objek ToDo
+      _todoList = data
+          .map((item) => ToDo.fromMap(item))
+          .where((item) => !item.isDone)
+          .toList();
+      _completedTodoList = data
+          .map((item) => ToDo.fromMap(item))
+          .where((item) => item.isDone)
+          .toList();
     });
   }
 
@@ -35,6 +46,7 @@ class _MyWidgetState extends State<MyMainPage> {
     });
 
     dbHelper.update(todo.toMap());
+    _refreshData(); // Refresh list after change
   }
 
   void _deleteToDoItem(int id) {
@@ -42,6 +54,7 @@ class _MyWidgetState extends State<MyMainPage> {
 
     setState(() {
       _todoList.removeWhere((item) => item.id == id);
+      _completedTodoList.removeWhere((item) => item.id == id);
     });
   }
 
@@ -57,7 +70,7 @@ class _MyWidgetState extends State<MyMainPage> {
             clipBehavior: Clip.none,
             children: [
               Positioned(
-                bottom: -70,
+                bottom: -85,
                 right: 20,
                 left: 20,
                 child: SvgPicture.asset(
@@ -70,19 +83,56 @@ class _MyWidgetState extends State<MyMainPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 60.0),
+            const SizedBox(height: 100.0),
+            Text(
+              "Tugasku",
+              style: AppTextStyles.h2.copyWith(
+                color: AppColors.royalPurple,
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            // Daftar tugas yang belum selesai
             Expanded(
               child: ListView.builder(
                 itemCount: _todoList.length,
                 itemBuilder: (context, index) {
                   final todo = _todoList[index];
-                  return ToDoItem(
-                    todo: todo,
-                    onToDoChanged: _toggleToDoStatus,
-                    onDeleteItem: _deleteToDoItem,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: ToDoItem(
+                      todo: todo,
+                      onToDoChanged: _toggleToDoStatus,
+                      onDeleteItem: _deleteToDoItem,
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Bagian "Selesai"
+            Text(
+              "Selesai",
+              style: AppTextStyles.h2.copyWith(
+                color: AppColors.royalPurple,
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            // Daftar tugas yang sudah selesai
+            Expanded(
+              child: ListView.builder(
+                itemCount: _completedTodoList.length,
+                itemBuilder: (context, index) {
+                  final todo = _completedTodoList[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: ToDoItem(
+                      todo: todo,
+                      onToDoChanged: _toggleToDoStatus,
+                      onDeleteItem: _deleteToDoItem,
+                    ),
                   );
                 },
               ),

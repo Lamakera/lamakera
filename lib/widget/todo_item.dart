@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../model/todo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lamakera/styles/fonts.dart';
 import 'package:lamakera/styles/colors.dart';
+import 'package:intl/intl.dart';
 
 class ToDoItem extends StatelessWidget {
   final ToDo todo;
@@ -19,10 +21,11 @@ class ToDoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onToDoChanged(todo); // Mengubah status todo saat di-tap
+        onToDoChanged(todo);
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: todo.isDone ? Colors.green.withOpacity(0.1) : Colors.white,
@@ -36,17 +39,16 @@ class ToDoItem extends StatelessWidget {
           ],
         ),
         child: Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.center, // Menjaga elemen tetap sejajar
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Custom Checkbox
             GestureDetector(
               onTap: () {
-                onToDoChanged(todo); // Mengubah status saat di-tap
+                onToDoChanged(todo);
               },
               child: Container(
-                width: 30, // Ukuran tetap untuk checkbox
-                height: 30, // Ukuran tetap untuk checkbox
+                width: 22,
+                height: 22,
                 decoration: BoxDecoration(
                   color: todo.isDone ? Colors.grey : Colors.transparent,
                   borderRadius: BorderRadius.circular(50),
@@ -56,26 +58,37 @@ class ToDoItem extends StatelessWidget {
                     ? const Icon(
                         Icons.check,
                         color: Colors.white,
-                        size: 18, // Ukuran centang
+                        size: 18,
                       )
-                    : null, // Tidak ada centang jika belum dicentang
+                    : null,
               ),
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: Text(
-                todo.todoText,
-                style: TextStyle(
-                  decoration: todo.isDone ? TextDecoration.lineThrough : null,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: todo.isDone
-                      ? AppColors.vibrantViolet
-                      : AppColors.vibrantViolet, // Warna teks tetap sama
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    todo.todoText,
+                    style: AppTextStyles.subhead1Regular.copyWith(
+                      decoration:
+                          todo.isDone ? TextDecoration.lineThrough : null,
+                      color:
+                          todo.isDone ? AppColors.vibrantViolet : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  if (!todo.isDone)
+                    Text(
+                      DateFormat('EEEE, dd-MM-yyyy').format(
+                          DateFormat('yyyy-MM-dd').parse(todo.deadline)),
+                      style: AppTextStyles.paragraph2Light.copyWith(
+                        color: AppColors.black,
+                      ),
+                    ),
+                ],
               ),
             ),
-            // Menampilkan icon hapus jika todo sudah selesai
             if (todo.isDone)
               Padding(
                 padding: const EdgeInsets.only(left: 1.0),

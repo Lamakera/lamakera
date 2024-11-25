@@ -20,7 +20,7 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
 
   String getFormattedDate(DateTime? date) {
     if (date == null) return 'Pilih Tanggal';
-    return '${date.day}/${date.month}/${date.year}';
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
   void saveTask() async {

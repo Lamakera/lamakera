@@ -33,39 +33,78 @@ class DatabaseHelper {
           );
         ''');
       },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // Menambah kolom baru jika ada perubahan versi database di masa depan
+          await db.execute('''ALTER TABLE tasks ADD COLUMN newColumn TEXT''');
+        }
+      },
     );
   }
 
   // Fungsi untuk menyisipkan data
   Future<int> insert(Map<String, dynamic> row) async {
-    final db = await database;
-    return await db.insert('tasks', row);
+    try {
+      final db = await database;
+      return await db.insert('tasks', row);
+    } catch (e) {
+      print('Error inserting row: $e');
+      return 0; // Mengembalikan 0 jika terjadi error
+    }
   }
 
-  // Fungsi untuk membaca semua data
+  // Fungsi untuk membaca semua data, dengan pengurutan berdasarkan deadline
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     final db = await database;
-    return await db.query('tasks');
+    return await db.query(
+      'tasks',
+      orderBy: 'deadline ASC', // Urutkan berdasarkan deadline
+    );
   }
 
   // Fungsi untuk memperbarui data
   Future<int> update(Map<String, dynamic> row) async {
-    final db = await database;
-    return await db.update(
-      'tasks',
-      row,
-      where: 'id = ?',
-      whereArgs: [row['id']],
-    );
+    try {
+      final db = await database;
+      return await db.update(
+        'tasks',
+        row,
+        where: 'id = ?',
+        whereArgs: [row['id']],
+      );
+    } catch (e) {
+      print('Error updating row: $e');
+      return 0; // Mengembalikan 0 jika terjadi error
+    }
   }
 
-  // Fungsi untuk menghapus data
+  // Fungsi untuk menghapus data berdasarkan ID
   Future<int> delete(int id) async {
-    final db = await database;
-    return await db.delete(
-      'tasks',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    try {
+      final db = await database;
+      return await db.delete(
+        'tasks',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    } catch (e) {
+      print('Error deleting row: $e');
+      return 0; // Mengembalikan 0 jika terjadi error
+    }
+  }
+
+  // Fungsi untuk menghapus data berdasarkan kategori
+  Future<int> deleteByCategory(String category) async {
+    try {
+      final db = await database;
+      return await db.delete(
+        'tasks',
+        where: 'category = ?',
+        whereArgs: [category],
+      );
+    } catch (e) {
+      print('Error deleting by category: $e');
+      return 0; // Mengembalikan 0 jika terjadi error
+    }
   }
 }

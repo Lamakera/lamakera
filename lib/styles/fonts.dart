@@ -1,38 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyles {
-  static const TextStyle h1 = TextStyle(
+  static final TextStyle h1 = GoogleFonts.poppins(
     fontSize: 20,
     fontWeight: FontWeight.w600,
   );
 
-  static const TextStyle h2 = TextStyle(
+  static final TextStyle h2 = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle h3 = TextStyle(
+  static final TextStyle h3 = GoogleFonts.poppins(
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
 
-  static const TextStyle h4 = TextStyle(
+  static final TextStyle h4 = GoogleFonts.poppins(
     fontSize: 12,
     fontWeight: FontWeight.normal,
   );
 
-  static const TextStyle paragraph1SemiBold = TextStyle(
+  static final TextStyle paragraph1SemiBold = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: FontWeight.w600,
   );
 
-  static const TextStyle subhead1Regular = TextStyle(
+  static final TextStyle subhead1Regular = GoogleFonts.poppins(
     fontSize: 12,
     fontWeight: FontWeight.normal,
   );
 
-  static const TextStyle paragraph1Medium = TextStyle(
+  static final TextStyle paragraph1Medium = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: FontWeight.w500,
+  );
+
+  static final TextStyle paragraph2Light = GoogleFonts.poppins(
+    fontSize: 10,
+    fontWeight: FontWeight.w300,
   );
 }
