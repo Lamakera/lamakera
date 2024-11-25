@@ -16,28 +16,12 @@ class MyMainPage extends StatefulWidget {
 
 class _MyWidgetState extends State<MyMainPage> {
   final DatabaseHelper dbHelper = DatabaseHelper();
-  List<ToDo> _todoList = []; // List untuk tugas yang belum selesai
-  List<ToDo> _completedTodoList = []; // List untuk tugas yang sudah selesai
+  List<ToDo> _todoList = [];
+  List<ToDo> _completedTodoList = [];
 
   @override
   void initState() {
     super.initState();
-    _refreshData();
-  }
-
-  void _refreshData() async {
-    final data = await dbHelper.queryAllRows();
-    setState(() {
-      // Memetakan data ke dalam daftar objek ToDo
-      _todoList = data
-          .map((item) => ToDo.fromMap(item))
-          .where((item) => !item.isDone)
-          .toList();
-      _completedTodoList = data
-          .map((item) => ToDo.fromMap(item))
-          .where((item) => item.isDone)
-          .toList();
-    });
   }
 
   void _toggleToDoStatus(ToDo todo) {
@@ -46,7 +30,6 @@ class _MyWidgetState extends State<MyMainPage> {
     });
 
     dbHelper.update(todo.toMap());
-    _refreshData(); // Refresh list after change
   }
 
   void _deleteToDoItem(int id) {
@@ -97,17 +80,36 @@ class _MyWidgetState extends State<MyMainPage> {
             const SizedBox(height: 20.0),
             // Daftar tugas yang belum selesai
             Expanded(
-              child: ListView.builder(
-                itemCount: _todoList.length,
-                itemBuilder: (context, index) {
-                  final todo = _todoList[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ToDoItem(
-                      todo: todo,
-                      onToDoChanged: _toggleToDoStatus,
-                      onDeleteItem: _deleteToDoItem,
-                    ),
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: dbHelper.getAllTasksStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('Tidak ada tugas'));
+                  }
+
+                  final data = snapshot.data!;
+                  final todoList = data
+                      .map((item) => ToDo.fromMap(item))
+                      .where((item) => !item.isDone)
+                      .toList();
+
+                  return ListView.builder(
+                    itemCount: todoList.length,
+                    itemBuilder: (context, index) {
+                      final todo = todoList[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ToDoItem(
+                          todo: todo,
+                          onToDoChanged: _toggleToDoStatus,
+                          onDeleteItem: _deleteToDoItem,
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -122,17 +124,36 @@ class _MyWidgetState extends State<MyMainPage> {
             const SizedBox(height: 20.0),
             // Daftar tugas yang sudah selesai
             Expanded(
-              child: ListView.builder(
-                itemCount: _completedTodoList.length,
-                itemBuilder: (context, index) {
-                  final todo = _completedTodoList[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ToDoItem(
-                      todo: todo,
-                      onToDoChanged: _toggleToDoStatus,
-                      onDeleteItem: _deleteToDoItem,
-                    ),
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: dbHelper.getAllTasksStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('Tidak ada tugas selesai'));
+                  }
+
+                  final data = snapshot.data!;
+                  final completedTodoList = data
+                      .map((item) => ToDo.fromMap(item))
+                      .where((item) => item.isDone)
+                      .toList();
+
+                  return ListView.builder(
+                    itemCount: completedTodoList.length,
+                    itemBuilder: (context, index) {
+                      final todo = completedTodoList[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ToDoItem(
+                          todo: todo,
+                          onToDoChanged: _toggleToDoStatus,
+                          onDeleteItem: _deleteToDoItem,
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -145,9 +166,7 @@ class _MyWidgetState extends State<MyMainPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const TambahTugasPage()),
-          ).then((_) {
-            _refreshData();
-          });
+          ).then((_) {});
         },
         child: const Icon(Icons.add),
         backgroundColor: AppColors.vibrantViolet,

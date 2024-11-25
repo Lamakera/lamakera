@@ -3,12 +3,16 @@ class ToDo {
   String todoText;
   bool isDone;
   String deadline; // Tanggal dalam bentuk String
+  String category; // Menambahkan kategori
+  int notification; // Menambahkan status notifikasi
 
   ToDo({
     this.id,
     required this.todoText,
     this.isDone = false,
-    required this.deadline, // Deadline harus ada saat membuat tugas
+    required this.deadline,
+    required this.category, // Menambahkan kategori
+    required this.notification, // Menambahkan status notifikasi
   });
 
   // Pemetaan data dari database ke objek ToDo
@@ -17,7 +21,9 @@ class ToDo {
       id: map['id'],
       todoText: map['todoText'],
       isDone: map['isDone'] == 1, // Mengonversi 1/0 ke bool
-      deadline: map['deadline'], // Deadline dalam bentuk String
+      deadline: map['deadline'],
+      category: map['category'], // Memetakan kategori
+      notification: map['notification'], // Memetakan status notifikasi
     );
   }
 
@@ -27,7 +33,9 @@ class ToDo {
       'id': id,
       'todoText': todoText,
       'isDone': isDone ? 1 : 0, // Mengonversi bool ke 1/0
-      'deadline': deadline, // Deadline tetap dalam bentuk String
+      'deadline': deadline,
+      'category': category, // Menambahkan kategori ke map
+      'notification': notification, // Menambahkan status notifikasi ke map
     };
   }
 }

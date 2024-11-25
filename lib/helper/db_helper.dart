@@ -33,12 +33,6 @@ class DatabaseHelper {
           );
         ''');
       },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          // Menambah kolom baru jika ada perubahan versi database di masa depan
-          await db.execute('''ALTER TABLE tasks ADD COLUMN newColumn TEXT''');
-        }
-      },
     );
   }
 
@@ -49,17 +43,30 @@ class DatabaseHelper {
       return await db.insert('tasks', row);
     } catch (e) {
       print('Error inserting row: $e');
-      return 0; // Mengembalikan 0 jika terjadi error
+      return 0;
     }
   }
 
-  // Fungsi untuk membaca semua data, dengan pengurutan berdasarkan deadline
+  // Fungsi untuk membaca semua data
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     final db = await database;
     return await db.query(
       'tasks',
-      orderBy: 'deadline ASC', // Urutkan berdasarkan deadline
+      orderBy: 'deadline ASC',
     );
+  }
+
+  // Menambahkan stream untuk mendengarkan perubahan pada tabel 'tasks'
+  Stream<List<Map<String, dynamic>>> getAllTasksStream() async* {
+    final db = await database;
+    final Stream<List<Map<String, dynamic>>> stream = Stream.periodic(
+      Duration(seconds: 1), // Memeriksa perubahan setiap detik
+      (_) async => await db.query(
+        'tasks',
+        orderBy: 'deadline ASC',
+      ),
+    ).asyncMap((event) => event); // Mengubah stream untuk asinkron
+    yield* stream;
   }
 
   // Fungsi untuk memperbarui data
@@ -74,7 +81,7 @@ class DatabaseHelper {
       );
     } catch (e) {
       print('Error updating row: $e');
-      return 0; // Mengembalikan 0 jika terjadi error
+      return 0;
     }
   }
 
@@ -89,7 +96,7 @@ class DatabaseHelper {
       );
     } catch (e) {
       print('Error deleting row: $e');
-      return 0; // Mengembalikan 0 jika terjadi error
+      return 0;
     }
   }
 
@@ -104,7 +111,7 @@ class DatabaseHelper {
       );
     } catch (e) {
       print('Error deleting by category: $e');
-      return 0; // Mengembalikan 0 jika terjadi error
+      return 0;
     }
   }
 }

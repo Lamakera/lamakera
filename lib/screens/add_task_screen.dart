@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamakera/styles/colors.dart';
 import 'package:lamakera/styles/fonts.dart';
-import 'package:lamakera/helper/db_helper.dart'; // Import DatabaseHelper
+import 'package:lamakera/helper/db_helper.dart';
 
 class TambahTugasPage extends StatefulWidget {
   const TambahTugasPage({super.key});
@@ -106,7 +106,9 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
                               ),
                               TextField(
                                 controller: TextEditingController(
-                                  text: getFormattedDate(_selectedDate),
+                                  text: _selectedDate == null
+                                      ? 'Pilih Tanggal'
+                                      : getFormattedDate(_selectedDate),
                                 ),
                                 style: AppTextStyles.subhead1Regular.copyWith(
                                   color: AppColors.black,

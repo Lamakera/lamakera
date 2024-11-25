@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamakera/styles/fonts.dart';
 import 'package:lamakera/styles/colors.dart';
 import 'package:intl/intl.dart';
+import 'package:lamakera/screens/edit_task_screen.dart'; // Pastikan path ini benar
 
 class ToDoItem extends StatelessWidget {
   final ToDo todo;
@@ -21,7 +22,13 @@ class ToDoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onToDoChanged(todo);
+        // Navigasi ke halaman EditTugasPage
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditTugasPage(todo: todo),
+          ),
+        );
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
