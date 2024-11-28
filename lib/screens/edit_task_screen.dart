@@ -7,7 +7,7 @@ import 'package:lamakera/model/todo.dart';
 import 'package:intl/intl.dart';
 
 class EditTugasPage extends StatefulWidget {
-  final ToDo todo; // Menerima objek tugas yang akan diedit
+  final ToDo todo; 
   const EditTugasPage({super.key, required this.todo});
 
   @override

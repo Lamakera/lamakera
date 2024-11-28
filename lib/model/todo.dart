@@ -2,20 +2,19 @@ class ToDo {
   int? id;
   String todoText;
   bool isDone;
-  String deadline; // Tanggal dalam bentuk String
-  String category; // Menambahkan kategori
-  int notification; // Menambahkan status notifikasi
+  String deadline;
+  String category; 
+  int notification; 
 
   ToDo({
     this.id,
     required this.todoText,
     this.isDone = false,
     required this.deadline,
-    required this.category, // Menambahkan kategori
-    required this.notification, // Menambahkan status notifikasi
+    required this.category, 
+    required this.notification, 
   });
 
-  // Pemetaan data dari database ke objek ToDo
   factory ToDo.fromMap(Map<String, dynamic> map) {
     return ToDo(
       id: map['id'],
