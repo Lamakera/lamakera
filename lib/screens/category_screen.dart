@@ -13,27 +13,26 @@ class KategoriPage extends StatefulWidget {
 }
 
 class _KategoriPageState extends State<KategoriPage> {
-  String selectedCategory = 'Kerja'; // Kategori default
-  List<Map<String, dynamic>> taskList = []; // Data tugas dari SQLite
-  final DatabaseHelper _databaseHelper =
-      DatabaseHelper(); // Inisialisasi helper
+  String selectedCategory = 'Kerja'; // Default kategori
+  List<Map<String, dynamic>> taskList = [];
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    _fetchTasks(); // Ambil data dari database saat halaman dimuat
+    _fetchTasks(); // Ambil data dari database saat halaman dibuka
   }
 
   Future<void> _fetchTasks() async {
     final data = await _databaseHelper.queryAllRows();
     setState(() {
-      taskList = data;
+      taskList = data; // Simpan semua data dari database ke dalam taskList
     });
   }
 
   void _filterByCategory(String category) {
     setState(() {
-      selectedCategory = category;
+      selectedCategory = category; // Ubah kategori yang dipilih
     });
   }
 
@@ -45,32 +44,39 @@ class _KategoriPageState extends State<KategoriPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kategori', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppColors.vibrantViolet,
+        title: Text(
+          'Kategori',
+          style: AppTextStyles.h1.copyWith(
+            color: AppColors.mediumPurple,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start, // Elemen di kiri
           children: [
-            // Tombol filter kategori
+            // Tombol filter kategori di kiri atas
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start, // Tombol sejajar kiri
               children: [
                 ElevatedButton(
                   onPressed: () => _filterByCategory('Kerja'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: selectedCategory == 'Kerja'
                         ? AppColors.vibrantViolet
-                        : Colors.grey[200],
+                        : AppColors.lavenderBlush,
                     foregroundColor: selectedCategory == 'Kerja'
                         ? Colors.white
-                        : Colors.black,
+                        : AppColors.vibrantViolet,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    shadowColor: Colors.grey,
+                    elevation: 5,
                   ),
-                  child: const Text('Kerja'),
+                  child: Text('Kerja'),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
@@ -78,13 +84,15 @@ class _KategoriPageState extends State<KategoriPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: selectedCategory == 'Kuliah'
                         ? AppColors.vibrantViolet
-                        : Colors.grey[200],
+                        : AppColors.lavenderBlush,
                     foregroundColor: selectedCategory == 'Kuliah'
                         ? Colors.white
-                        : Colors.black,
+                        : AppColors.vibrantViolet,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    shadowColor: Colors.grey,
+                    elevation: 5,
                   ),
                   child: const Text('Kuliah'),
                 ),
@@ -92,49 +100,40 @@ class _KategoriPageState extends State<KategoriPage> {
             ),
             const SizedBox(height: 20),
 
-            // Judul daftar tugas
+            // Judul "Tugasku" di bawah tombol
             Text(
               'Tugasku',
               style: AppTextStyles.h2.copyWith(color: AppColors.vibrantViolet),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
-            // Daftar tugas
-            // Expanded(
-            //   child: filteredTasks.isEmpty
-            //       ? const Center(child: Text('Tidak ada tugas'))
-            //       : ListView.builder(
-            //           itemCount: filteredTasks.length,
-            //           itemBuilder: (context, index) {
-            //             final task = filteredTasks[index];
-            //             return ToDoItem(
-            //               todo: ToDo(
-            //                 id: task['id'],
-            //                 todoText: task['todoText'],
-            //                 category: task['category'],
-            //                 deadline: task['deadline'],
-            //                 isDone: task['isDone'] == 1,
-            //               ),
-            //               onToDoChanged: (updatedTodo) async {
-            //                 // Update status tugas di database
-            //                 await _databaseHelper.update({
-            //                   'id': task['id'],
-            //                   'todoText': task['todoText'],
-            //                   'category': task['category'],
-            //                   'deadline': task['deadline'],
-            //                   'isDone': updatedTodo.isDone ? 1 : 0,
-            //                 });
-            //                 _fetchTasks();
-            //               },
-            //               onDeleteItem: (id) async {
-            //                 // Hapus tugas dari database
-            //                 await _databaseHelper.delete(id);
-            //                 _fetchTasks();
-            //               },
-            //             );
-            //           },
-            //         ),
-            // ),
+            // Daftar tugas berdasarkan kategori
+            Expanded(
+              child: filteredTasks.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: filteredTasks.length,
+                      itemBuilder: (context, index) {
+                        final task = ToDo.fromMap(filteredTasks[index]);
+                        return ToDoItem(
+                          todo: task,
+                          onToDoChanged: (updatedTask) async {
+                            await _databaseHelper.update(updatedTask.toMap());
+                            _fetchTasks();
+                          },
+                          onDeleteItem: (id) async {
+                            await _databaseHelper.delete(id);
+                            _fetchTasks();
+                          },
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Text(
+                        'Tidak ada tugas di kategori ini',
+                        style: AppTextStyles.subhead1Regular,
+                      ),
+                    ),
+            ),
           ],
         ),
       ),
