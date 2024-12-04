@@ -3,7 +3,7 @@ import 'package:lamakera/screens/home_screen.dart';
 import 'package:lamakera/screens/category_screen.dart';
 import 'package:lamakera/screens/calender_screen.dart';
 import 'package:lamakera/styles/colors.dart';
-import 'package:lamakera/styles/fonts.dart'; // Pastikan AppTextStyles sudah diimpor
+import 'package:lamakera/styles/fonts.dart'; 
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyBottom extends StatefulWidget {
@@ -30,8 +30,10 @@ class _MyBottomState extends State<MyBottom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Menambahkan warna latar belakang putih
       body: _page[_currentindex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white, // Warna latar belakang navigation bar
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -67,10 +69,8 @@ class _MyBottomState extends State<MyBottom> {
         currentIndex: _currentindex,
         selectedItemColor: AppColors.vibrantViolet,
         unselectedItemColor: Colors.grey,
-        selectedLabelStyle:
-            AppTextStyles.subhead1Regular, // Gaya teks label dipilih
-        unselectedLabelStyle:
-            AppTextStyles.subhead1Regular, // Gaya teks label tidak dipilih
+        selectedLabelStyle: AppTextStyles.subhead1Regular,
+        unselectedLabelStyle: AppTextStyles.subhead1Regular,
         onTap: _onTappedItem,
       ),
     );

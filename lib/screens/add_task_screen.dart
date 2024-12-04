@@ -56,6 +56,7 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Tambah Tugas',
@@ -63,6 +64,7 @@ class _TambahTugasPageState extends State<TambahTugasPage> {
             color: AppColors.mediumPurple,
           ),
         ),
+        backgroundColor: Colors.white,
         centerTitle: true,
         automaticallyImplyLeading: true,
         iconTheme: IconThemeData(

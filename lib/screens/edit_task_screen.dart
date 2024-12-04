@@ -7,7 +7,7 @@ import 'package:lamakera/model/todo.dart';
 import 'package:intl/intl.dart';
 
 class EditTugasPage extends StatefulWidget {
-  final ToDo todo; 
+  final ToDo todo;
   const EditTugasPage({super.key, required this.todo});
 
   @override
@@ -67,6 +67,7 @@ class _EditTugasPageState extends State<EditTugasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Edit Tugas',
@@ -74,6 +75,7 @@ class _EditTugasPageState extends State<EditTugasPage> {
             color: AppColors.mediumPurple,
           ),
         ),
+        backgroundColor: Colors.white,
         centerTitle: true,
         automaticallyImplyLeading: true,
         iconTheme: IconThemeData(

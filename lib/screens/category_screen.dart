@@ -43,6 +43,7 @@ class _KategoriPageState extends State<KategoriPage> {
         taskList.where((task) => task['category'] == selectedCategory).toList();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Kategori',
@@ -50,6 +51,7 @@ class _KategoriPageState extends State<KategoriPage> {
             color: AppColors.mediumPurple,
           ),
         ),
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Padding(

@@ -7,7 +7,6 @@ import 'package:lamakera/styles/colors.dart';
 import '../model/todo.dart';
 import '../widget/todo_item.dart';
 
-
 class MyMainPage extends StatefulWidget {
   const MyMainPage({super.key});
 
@@ -45,6 +44,7 @@ class _MyWidgetState extends State<MyMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: AppBar(

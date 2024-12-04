@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lamakera/styles/fonts.dart';
 import 'package:lamakera/styles/colors.dart';
 import 'package:intl/intl.dart';
-import 'package:lamakera/screens/edit_task_screen.dart'; 
+import 'package:lamakera/screens/edit_task_screen.dart';
 
 class ToDoItem extends StatelessWidget {
   final ToDo todo;
@@ -35,7 +35,9 @@ class ToDoItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: todo.isDone ? Colors.green.withOpacity(0.1) : Colors.white,
+          color: todo.isDone
+              ? Colors.green.withOpacity(0.1)
+              : AppColors.lavenderBlush,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
