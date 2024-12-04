@@ -36,7 +36,7 @@ class ToDoItem extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: todo.isDone
-              ? Colors.green.withOpacity(0.1)
+              ? Colors.black.withOpacity(0.1)
               : AppColors.lavenderBlush,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [

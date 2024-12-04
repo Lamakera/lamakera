@@ -103,7 +103,7 @@ class _MyWidgetState extends State<MyMainPage> {
                     itemBuilder: (context, index) {
                       final todo = todoList[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 1.0),
                         child: ToDoItem(
                           todo: todo,
                           onToDoChanged: _toggleToDoStatus,
@@ -147,7 +147,7 @@ class _MyWidgetState extends State<MyMainPage> {
                     itemBuilder: (context, index) {
                       final todo = completedTodoList[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
+                        padding: const EdgeInsets.only(bottom: 1.0),
                         child: ToDoItem(
                           todo: todo,
                           onToDoChanged: _toggleToDoStatus,
