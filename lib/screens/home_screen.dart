@@ -66,7 +66,7 @@ class _MyWidgetState extends State<MyMainPage> {
           ),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,43 +79,52 @@ class _MyWidgetState extends State<MyMainPage> {
               ),
             ),
             const SizedBox(height: 20.0),
-            // Daftar tugas yang belum selesai
-            Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>(
-                stream: dbHelper.getAllTasksStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: dbHelper.getAllTasksStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Tidak ada tugas'));
-                  }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text('Tidak ada tugas',
+                          style: TextStyle(color: Colors.grey)));
+                }
 
-                  final data = snapshot.data!;
-                  final todoList = data
-                      .map((item) => ToDo.fromMap(item))
-                      .where((item) => !item.isDone)
-                      .toList();
+                final data = snapshot.data!;
+                final todoList = data
+                    .map((item) => ToDo.fromMap(item))
+                    .where((item) => !item.isDone)
+                    .toList();
 
-                  return ListView.builder(
-                    itemCount: todoList.length,
-                    itemBuilder: (context, index) {
-                      final todo = todoList[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 1.0),
-                        child: ToDoItem(
-                          todo: todo,
-                          onToDoChanged: _toggleToDoStatus,
-                          onDeleteItem: _deleteToDoItem,
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+                if (todoList.isEmpty) {
+                  return const Center(
+                      child: Text(
+                    'Tidak ada tugas',
+                    style: TextStyle(color: Colors.grey),
+                  ));
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: todoList.length,
+                  itemBuilder: (context, index) {
+                    final todo = todoList[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ToDoItem(
+                        todo: todo,
+                        onToDoChanged: _toggleToDoStatus,
+                        onDeleteItem: _deleteToDoItem,
+                      ),
+                    );
+                  },
+                );
+              },
             ),
-            // Bagian "Selesai"
+            const SizedBox(height: 20.0),
             Text(
               "Selesai",
               style: AppTextStyles.h2.copyWith(
@@ -123,41 +132,45 @@ class _MyWidgetState extends State<MyMainPage> {
               ),
             ),
             const SizedBox(height: 20.0),
-            // Daftar tugas yang sudah selesai
-            Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>(
-                stream: dbHelper.getAllTasksStream(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+            StreamBuilder<List<Map<String, dynamic>>>(
+              stream: dbHelper.getAllTasksStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Tidak ada tugas selesai'));
-                  }
+                final data = snapshot.data ?? [];
+                final completedTodoList = data
+                    .map((item) => ToDo.fromMap(item))
+                    .where((item) => item.isDone)
+                    .toList();
 
-                  final data = snapshot.data!;
-                  final completedTodoList = data
-                      .map((item) => ToDo.fromMap(item))
-                      .where((item) => item.isDone)
-                      .toList();
-
-                  return ListView.builder(
-                    itemCount: completedTodoList.length,
-                    itemBuilder: (context, index) {
-                      final todo = completedTodoList[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 1.0),
-                        child: ToDoItem(
-                          todo: todo,
-                          onToDoChanged: _toggleToDoStatus,
-                          onDeleteItem: _deleteToDoItem,
-                        ),
-                      );
-                    },
+                if (completedTodoList.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      "Belum ada yang selesai",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   );
-                },
-              ),
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: completedTodoList.length,
+                  itemBuilder: (context, index) {
+                    final todo = completedTodoList[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ToDoItem(
+                        todo: todo,
+                        onToDoChanged: _toggleToDoStatus,
+                        onDeleteItem: _deleteToDoItem,
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

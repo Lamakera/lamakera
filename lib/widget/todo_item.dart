@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../model/todo.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../model/todo.dart';
 import 'package:lamakera/styles/fonts.dart';
 import 'package:lamakera/styles/colors.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +22,6 @@ class ToDoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigasi ke halaman EditTugasPage
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -32,44 +31,67 @@ class ToDoItem extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: todo.isDone
-              ? Colors.black.withOpacity(0.1)
-              : AppColors.lavenderBlush,
-          borderRadius: BorderRadius.circular(12),
+          color: todo.isDone ? Colors.grey[200] : AppColors.lavenderBlush,
+          borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 4,
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
             ),
           ],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Custom Checkbox
-            GestureDetector(
-              onTap: () {
-                onToDoChanged(todo);
-              },
-              child: Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: todo.isDone ? Colors.grey : Colors.transparent,
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(color: Colors.grey, width: 2),
+            // Custom Checkbox with White Circle
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: () {
+                  onToDoChanged(todo);
+                },
+                child: Container(
+                  width: 50, // Ukuran lingkaran luar (putih)
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white, // Lingkaran luar berwarna putih
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 20, // Ukuran checkbox di dalam lingkaran
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: todo.isDone
+                            ? AppColors.vibrantViolet
+                            : Colors.transparent,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.vibrantViolet,
+                          width: 2,
+                        ),
+                      ),
+                      child: todo.isDone
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 14,
+                            )
+                          : null,
+                    ),
+                  ),
                 ),
-                child: todo.isDone
-                    ? const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 18,
-                      )
-                    : null,
               ),
             ),
             const SizedBox(width: 15),
@@ -77,37 +99,53 @@ class ToDoItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        DateFormat('EEEE, dd MMMM').format(
+                            DateFormat('yyyy-MM-dd').parse(todo.deadline)),
+                        style: AppTextStyles.subhead1Regular.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
                   Text(
                     todo.todoText,
-                    style: AppTextStyles.subhead1Regular.copyWith(
-                      decoration:
-                          todo.isDone ? TextDecoration.lineThrough : null,
-                      color:
-                          todo.isDone ? AppColors.vibrantViolet : Colors.black,
+                    style: AppTextStyles.h2.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  if (!todo.isDone)
-                    Text(
-                      DateFormat('EEEE, dd-MM-yyyy').format(
-                          DateFormat('yyyy-MM-dd').parse(todo.deadline)),
-                      style: AppTextStyles.paragraph2Light.copyWith(
-                        color: AppColors.black,
-                      ),
-                    ),
                 ],
               ),
             ),
             if (todo.isDone)
               Padding(
-                padding: const EdgeInsets.only(left: 1.0),
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'lib/assets/icons/cancel.svg',
-                    width: 22,
-                    height: 22,
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Container(
+                  width: 40, // Ukuran lingkaran
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white, // Warna lingkaran
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: () => onDeleteItem(todo.id!),
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'lib/assets/icons/cancel.svg',
+                      width: 22,
+                      height: 22,
+                    ),
+                    onPressed: () => onDeleteItem(todo.id!),
+                    color: Colors.red, // Warna ikon
+                  ),
                 ),
               ),
           ],

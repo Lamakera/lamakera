@@ -13,32 +13,32 @@ class KategoriPage extends StatefulWidget {
 }
 
 class _KategoriPageState extends State<KategoriPage> {
-  String selectedCategory = 'Kerja'; // Default kategori
+  String selectedCategory = 'Kerja'; 
   List<Map<String, dynamic>> taskList = [];
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    _fetchTasks(); // Ambil data dari database saat halaman dibuka
+    _fetchTasks(); 
   }
 
   Future<void> _fetchTasks() async {
     final data = await _databaseHelper.queryAllRows();
     setState(() {
-      taskList = data; // Simpan semua data dari database ke dalam taskList
+      taskList = data; 
     });
   }
 
   void _filterByCategory(String category) {
     setState(() {
-      selectedCategory = category; // Ubah kategori yang dipilih
+      selectedCategory = category; 
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Filter tugas berdasarkan kategori yang dipilih
+    
     List<Map<String, dynamic>> filteredTasks =
         taskList.where((task) => task['category'] == selectedCategory).toList();
 
@@ -57,11 +57,11 @@ class _KategoriPageState extends State<KategoriPage> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Elemen di kiri
+          crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
-            // Tombol filter kategori di kiri atas
+            
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Tombol sejajar kiri
+              mainAxisAlignment: MainAxisAlignment.start, 
               children: [
                 ElevatedButton(
                   onPressed: () => _filterByCategory('Kerja'),
@@ -102,14 +102,14 @@ class _KategoriPageState extends State<KategoriPage> {
             ),
             const SizedBox(height: 20),
 
-            // Judul "Tugasku" di bawah tombol
+            
             Text(
               'Tugasku',
               style: AppTextStyles.h2.copyWith(color: AppColors.vibrantViolet),
             ),
             const SizedBox(height: 20),
 
-            // Daftar tugas berdasarkan kategori
+            
             Expanded(
               child: filteredTasks.isNotEmpty
                   ? ListView.builder(

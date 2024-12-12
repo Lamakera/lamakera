@@ -36,7 +36,7 @@ class _KalenderPageState extends State<KalenderPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Filter tugas berdasarkan tanggal yang dipilih
+    
     List<Map<String, dynamic>> filteredTasks = taskList.where((task) {
       DateTime deadline = DateTime.parse(task['deadline']);
       return deadline.year == _selectedDay.year &&
@@ -62,14 +62,14 @@ class _KalenderPageState extends State<KalenderPage> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: AppColors.lavenderBlush, // Warna latar belakang merah
-                borderRadius: BorderRadius.circular(12), // Sudut melengkung
+                color: AppColors.lavenderBlush, 
+                borderRadius: BorderRadius.circular(12), 
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black
-                        .withOpacity(0.2), // Warna shadow dengan transparansi
-                    blurRadius: 8, // Tingkat blur dari shadow
-                    offset: Offset(0, 4), // Posisi shadow (x, y)
+                        .withOpacity(0.2), 
+                    blurRadius: 8, 
+                    offset: Offset(0, 4), 
                   ),
                 ],
               ),
@@ -83,7 +83,7 @@ class _KalenderPageState extends State<KalenderPage> {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
-                  _fetchTasks(); // Update tasks when the selected day changes
+                  _fetchTasks(); 
                 },
                 calendarStyle: CalendarStyle(
                   todayDecoration: BoxDecoration(
@@ -96,18 +96,18 @@ class _KalenderPageState extends State<KalenderPage> {
                   ),
                 ),
                 headerStyle: HeaderStyle(
-                  formatButtonVisible: false, // Menyembunyikan format button
-                  titleCentered: true, // Memastikan title ada di tengah
+                  formatButtonVisible: false, 
+                  titleCentered: true, 
                   leftChevronVisible:
-                      false, // Menyembunyikan tombol chevron kiri
+                      false, 
                   rightChevronVisible:
-                      false, // Menyembunyikan tombol chevron kanan
+                      false, 
                 ),
               ),
             ),
             SizedBox(height: 20),
             Text(
-              'Tanggal Terpilih: ${_selectedDay.toLocal()}'.split(' ')[0],
+              'Tugasku ${_selectedDay.toLocal()}'.split(' ')[0],
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class _KalenderPageState extends State<KalenderPage> {
               ),
             ),
             SizedBox(height: 20),
-            // Menampilkan todo yang sesuai dengan tanggal yang dipilih
+            
             filteredTasks.isNotEmpty
                 ? Expanded(
                     child: ListView.builder(
