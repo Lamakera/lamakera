@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           MyButton(
-              label: '+',
+              label: "+",
               onTap: () async {
                 await Get.to(() => const AddTaskPage());
                 _taskController.getTasks();
@@ -290,8 +290,8 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Get.isDarkMode ? darkHeaderClr : Colors.white,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(40),
-            topRight: Radius.circular(40),
+            topLeft: Radius.circular(50),
+            topRight: Radius.circular(50),
           ),
         ),
         child: Column(
@@ -349,23 +349,37 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  _buildBottomSheet({String? label, Function()? onTap, Color? clr}) {
+    _buildBottomSheet({
+    required String label,
+    required Function() onTap,
+    required Color clr,
+    bool isClose = false,
+    BorderRadius? borderRadius, // Tambahkan parameter untuk borderRadius
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.all(15),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        height: 65,
+        width: SizeConfig.screenWidth * 0.9,
         decoration: BoxDecoration(
-          color: clr,
-          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            width: 2,
+            color: isClose
+                ? Get.isDarkMode
+                    ? Colors.grey[600]!
+                    : Colors.grey[300]!
+                : clr,
+          ),
+          borderRadius: borderRadius ??
+              BorderRadius.circular(40), // Gunakan default jika null
+          color: isClose ? Colors.transparent : clr,
         ),
-        child: Text(
-          label!,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+        child: Center(
+          child: Text(
+            label,
+            style:
+                isClose ? titleStyle : titleStyle.copyWith(color: Colors.white),
           ),
         ),
       ),
