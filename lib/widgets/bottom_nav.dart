@@ -42,9 +42,9 @@ class MyBottom extends StatelessWidget {
               children: <Widget>[
                 IconButton(
                   icon: Image.asset(
-                    'images/tasktest.png', // Ganti dengan path gambar Anda
-                    width: 24, // Sesuaikan ukuran gambar
-                    height: 24, // Sesuaikan ukuran gambar
+                    'images/home.png', // Ganti dengan path gambar Anda
+                    width: 90, // Sesuaikan ukuran gambar
+                    height: 90, // Sesuaikan ukuran gambar
                   ),
                   onPressed: () {
                     bottomNavController.updateIndex(0);
@@ -52,11 +52,10 @@ class MyBottom extends StatelessWidget {
                 ),
                 const SizedBox(width: 30),
                 IconButton(
-                  icon: Icon(
-                    Icons.category_outlined,
-                    color: bottomNavController.currentIndex.value == 1
-                        ? Colors.white
-                        : Colors.white,
+                  icon: Image.asset(
+                    'images/category.png', // Ganti dengan path gambar Anda
+                    width: 90, // Sesuaikan ukuran gambar
+                    height: 90,
                   ),
                   onPressed: () {
                     bottomNavController.updateIndex(1);
