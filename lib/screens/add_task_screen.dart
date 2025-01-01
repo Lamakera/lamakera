@@ -1,330 +1,391 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lamakera/styles/colors.dart';
-import 'package:lamakera/styles/fonts.dart';
-import 'package:lamakera/helper/db_helper.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:lamakera/controllers/task_controller.dart';
+import 'package:lamakera/assets/theme.dart';
+import 'package:lamakera/widgets/button.dart';
+import '../../models/task.dart';
+import '../widgets/input_field.dart';
 
-class TambahTugasPage extends StatefulWidget {
-  const TambahTugasPage({super.key});
+class AddTaskPage extends StatefulWidget {
+  const AddTaskPage({Key? key}) : super(key: key);
 
   @override
-  _TambahTugasPageState createState() => _TambahTugasPageState();
+  State<AddTaskPage> createState() => _AddTaskPageState();
 }
 
-class _TambahTugasPageState extends State<TambahTugasPage> {
-  String selectedCategory = 'Pilih kategori';
-  bool isNotificationEnabled = false;
-  DateTime? _selectedDate;
+class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.put(TaskController());
 
-  final TextEditingController _taskController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
-  String getFormattedDate(DateTime? date) {
-    if (date == null) return 'Pilih Tanggal';
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  DateTime _selectedDate = DateTime.now();
+  String _startTime = DateFormat('hh:mm a').format(DateTime.now()).toString();
+  String _endTime = DateFormat('hh:mm a')
+      .format(DateTime.now().add(const Duration(minutes: 15)))
+      .toString();
 
-  void saveTask() async {
-    if (_selectedDate == null ||
-        selectedCategory == 'Pilih kategori' ||
-        _taskController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Mohon lengkapi semua data!')),
-      );
-      return;
-    }
+  int _selectedRemind = 5;
+  List<int> remindList = [5, 10, 15, 20];
+  String _selectedRepeat = 'None';
+  List<String> repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
 
-    // Buat objek tugas baru
-    final newTask = {
-      'todoText': _taskController.text,
-      'deadline': getFormattedDate(_selectedDate),
-      'category': selectedCategory,
-      'notification': isNotificationEnabled ? 1 : 0,
-      'isDone': 0,
-    };
+  int _selectedColor = 0;
 
-    // Simpan ke database
-    await DatabaseHelper().insert(newTask);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Tugas berhasil disimpan!')),
-    );
-
-    // Kembali ke halaman utama
-    Navigator.pop(context);
-  }
+  String _selectedCategory = 'None';
+  List<String> categoryList = ['None', 'Kerja', 'Kuliah'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'Tambah Tugas',
-          style: AppTextStyles.h1.copyWith(
-            color: AppColors.mediumPurple,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        automaticallyImplyLeading: true,
-        iconTheme: IconThemeData(
-          color: AppColors.mediumPurple,
-        ),
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: AppColors.lavenderBlush,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          spreadRadius: 1,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        // Deadline
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Deadline',
-                                style: AppTextStyles.h3.copyWith(
-                                  color: AppColors.mediumPurple,
-                                ),
-                              ),
-                              TextField(
-                                controller: TextEditingController(
-                                  text: _selectedDate == null
-                                      ? 'Pilih Tanggal'
-                                      : getFormattedDate(_selectedDate),
-                                ),
-                                style: AppTextStyles.subhead1Regular.copyWith(
-                                  color: AppColors.black,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: 'Pilih Tanggal',
-                                  hintStyle:
-                                      AppTextStyles.subhead1Regular.copyWith(
-                                    color: AppColors.black,
-                                  ),
-                                  suffixIcon: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SvgPicture.asset(
-                                      'lib/assets/icons/iconcalender.svg',
-                                      width: 22,
-                                      height: 22,
-                                    ),
-                                  ),
-                                  border: UnderlineInputBorder(),
-                                ),
-                                readOnly: true,
-                                onTap: () async {
-                                  DateTime? selectedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate:
-                                        _selectedDate ?? DateTime.now(),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime(2100),
-                                  );
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      _selectedDate = selectedDate;
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Tugas
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Tugas',
-                                style: AppTextStyles.h3.copyWith(
-                                  color: AppColors.mediumPurple,
-                                ),
-                              ),
-                              TextField(
-                                controller: _taskController,
-                                style: AppTextStyles.h4.copyWith(
-                                  color: AppColors.black,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: 'Tuliskan Tugasmu Di Sini',
-                                  hintStyle: AppTextStyles.h4.copyWith(
-                                    color: AppColors.black,
-                                  ),
-                                  border: UnderlineInputBorder(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Kategori
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Kategori',
-                                style: AppTextStyles.h3.copyWith(
-                                  color: AppColors.mediumPurple,
-                                ),
-                              ),
-                              DropdownButtonFormField<String>(
-                                value: selectedCategory,
-                                decoration: InputDecoration(
-                                  hintText: 'Pilih kategori',
-                                  hintStyle:
-                                      AppTextStyles.subhead1Regular.copyWith(
-                                    color: AppColors.black,
-                                  ),
-                                  border: UnderlineInputBorder(),
-                                ),
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text(
-                                      'Pilih kategori',
-                                      style: AppTextStyles.subhead1Regular
-                                          .copyWith(
-                                        color: AppColors.black,
-                                      ),
-                                    ),
-                                    value: 'Pilih kategori',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text(
-                                      'Kuliah',
-                                      style: AppTextStyles.subhead1Regular
-                                          .copyWith(
-                                        color: AppColors.black,
-                                      ),
-                                    ),
-                                    value: 'Kuliah',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text(
-                                      'Kerja',
-                                      style: AppTextStyles.subhead1Regular
-                                          .copyWith(
-                                        color: AppColors.black,
-                                      ),
-                                    ),
-                                    value: 'Kerja',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedCategory = value!;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Notifikasi
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Notifikasi',
-                                style: AppTextStyles.h3.copyWith(
-                                  color: AppColors.mediumPurple,
-                                ),
-                              ),
-                              SwitchListTile(
-                                title: Text(
-                                  'Nyalakan notifikasi',
-                                  style: AppTextStyles.h4.copyWith(
-                                    color: AppColors.black,
-                                  ),
-                                ),
-                                value: isNotificationEnabled,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    isNotificationEnabled = value;
-                                  });
-                                },
-                                activeColor: AppColors.vibrantViolet,
-                                contentPadding: EdgeInsets.zero,
-                                dense: true,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+      // ignore: deprecated_member_use
+      backgroundColor: context.theme.scaffoldBackgroundColor,
+      appBar: _customAppBar(),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              InputField(
+                title: 'Title',
+                hint: 'Enter title here',
+                controller: _titleController,
+              ),
+              InputField(
+                title: 'Note',
+                hint: 'Enter note here',
+                controller: _noteController,
+              ),
+              InputField(
+                title: 'Date',
+                hint: DateFormat.yMd().format(_selectedDate),
+                widget: IconButton(
+                  onPressed: () => _getDateFromUser(),
+                  icon: const Icon(
+                    Icons.calendar_today_outlined,
+                    color: Colors.grey,
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          // Tombol Simpan di bawah
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: InputField(
+                      title: 'Start Time',
+                      hint: _startTime,
+                      widget: IconButton(
+                        onPressed: () => _getTimeFromUser(isStartTime: true),
+                        icon: const Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Expanded(
+                    child: InputField(
+                      title: 'End Time',
+                      hint: _endTime,
+                      widget: IconButton(
+                        onPressed: () => _getTimeFromUser(isStartTime: false),
+                        icon: const Icon(
+                          Icons.access_time_rounded,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              InputField(
+                title: 'Remind',
+                hint: '$_selectedRemind minutes early',
+                widget: Row(
+                  children: [
+                    DropdownButton(
+                      dropdownColor: Colors.blueGrey,
+                      borderRadius: BorderRadius.circular(10),
+                      items: remindList
+                          .map<DropdownMenuItem<String>>(
+                              (int value) => DropdownMenuItem(
+                                  value: value.toString(),
+                                  child: Text(
+                                    '$value',
+                                    style: const TextStyle(color: Colors.white),
+                                  )))
+                          .toList(),
+                      icon: const Icon(Icons.keyboard_arrow_down,
+                          color: Colors.grey),
+                      iconSize: 32,
+                      elevation: 4,
+                      underline: Container(
+                        height: 0,
+                      ),
+                      style: subTitleStyle,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedRemind = int.parse(newValue!);
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      width: 6,
                     ),
                   ],
                 ),
-                child: ElevatedButton(
-                  onPressed: saveTask,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.vibrantViolet,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+              ),
+              InputField(
+                title: 'Repeat',
+                hint: _selectedRepeat,
+                widget: Row(
+                  children: [
+                    DropdownButton(
+                      dropdownColor: Colors.blueGrey,
+                      borderRadius: BorderRadius.circular(10),
+                      items: repeatList
+                          .map<DropdownMenuItem<String>>(
+                              (String value) => DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: const TextStyle(color: Colors.white),
+                                  )))
+                          .toList(),
+                      icon: const Icon(Icons.keyboard_arrow_down,
+                          color: Colors.grey),
+                      iconSize: 32,
+                      elevation: 4,
+                      underline: Container(
+                        height: 0,
+                      ),
+                      style: subTitleStyle,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedRepeat = newValue!;
+                        });
+                      },
                     ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    'Simpan',
-                    style: AppTextStyles.paragraph1SemiBold.copyWith(
-                      color: AppColors.white,
+                    const SizedBox(
+                      width: 6,
                     ),
-                  ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              InputField(
+                title: 'Category',
+                hint: _selectedCategory,
+                widget: Row(
+                  children: [
+                    DropdownButton(
+                      dropdownColor: Colors.blueGrey,
+                      borderRadius: BorderRadius.circular(10),
+                      items: categoryList
+                          .map<DropdownMenuItem<String>>(
+                              (String value) => DropdownMenuItem(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: const TextStyle(color: Colors.white),
+                                  )))
+                          .toList(),
+                      icon: const Icon(Icons.keyboard_arrow_down,
+                          color: Colors.grey),
+                      iconSize: 32,
+                      elevation: 4,
+                      underline: Container(
+                        height: 0,
+                      ),
+                      style: subTitleStyle,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedCategory = newValue!;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _colorPalette(),
+                  MyButton(
+                      label: 'Create Task',
+                      onTap: () {
+                        _validateData();
+                      }),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  AppBar _customAppBar() {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () => Get.back(),
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          size: 24,
+          color: primaryClr,
+        ),
+      ),
+      elevation: 0,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
+      actions: const [
+        SizedBox(
+          width: 20,
+        ),
+      ],
+      centerTitle: true,
+      title: const Text(
+        'AddTask',
+        style: TextStyle(
+          color: primaryClr, // Warna teks
+          fontSize: 20, // Ukuran font
+          fontWeight: FontWeight.bold, // Gaya font
+        ),
+      ),
+    );
+  }
+
+  _validateData() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      _addTasksToDb();
+      Get.back();
+    } else if (_titleController.text.isNotEmpty ||
+        _noteController.text.isNotEmpty) {
+      Get.snackbar('required', 'All fields are required!',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.white,
+          colorText: pinkClr,
+          icon: const Icon(
+            Icons.warning_amber_rounded,
+            color: Colors.red,
+          ));
+    } else {
+      print(
+          '############################ SOMETHING WRONG HAPPENED #############################');
+    }
+  }
+
+  _addTasksToDb() async {
+    try {
+      int value = await _taskController.addTask(
+        task: Task(
+          title: _titleController.text,
+          note: _noteController.text,
+          isCompleted: 0,
+          date: DateFormat.yMd().format(_selectedDate),
+          startTime: _startTime,
+          endTime: _endTime,
+          color: _selectedColor,
+          remind: _selectedRemind,
+          repeat: _selectedRepeat,
+          category: _selectedCategory,
+        ),
+      );
+      print('Value: $value');
+    } catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Column _colorPalette() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Color',
+          style: titleStyle,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Wrap(
+          children: List<Widget>.generate(
+            3,
+            (index) => GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedColor = index;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                child: CircleAvatar(
+                  backgroundColor: index == 0
+                      ? primaryClr
+                      : index == 1
+                          ? pinkClr
+                          : orangeClr,
+                  radius: 14,
+                  child: _selectedColor == index
+                      ? const Icon(
+                          Icons.done,
+                          size: 16,
+                          color: Colors.white,
+                        )
+                      : null,
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  _getDateFromUser() async {
+    DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2050));
+
+    if (pickedDate != null) {
+      setState(() => _selectedDate = pickedDate);
+    } else {
+      print('Please select correct date');
+    }
+  }
+
+  _getTimeFromUser({required bool isStartTime}) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      initialEntryMode: TimePickerEntryMode.input,
+      context: context,
+      initialTime: isStartTime
+          ? TimeOfDay.fromDateTime(DateTime.now())
+          : TimeOfDay.fromDateTime(
+              DateTime.now().add(const Duration(minutes: 15))),
+    );
+
+    // ignore: use_build_context_synchronously
+    String formattedTime = pickedTime!.format(context);
+
+    if (isStartTime) {
+      setState(() => _startTime = formattedTime);
+    } else if (!isStartTime) {
+      setState(() => _endTime = formattedTime);
+    } else {
+      print('Something went wrong !');
+    }
   }
 }
