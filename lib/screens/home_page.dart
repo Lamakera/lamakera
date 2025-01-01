@@ -108,12 +108,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          MyButton(
-              label: "+",
-              onTap: () async {
-                await Get.to(() => const AddTaskPage());
-                _taskController.getTasks();
-              }),
+          // MyButton(
+          //     label: "+",
+          //     onTap: () async {
+          //       await Get.to(() => const AddTaskPage());
+          //       _taskController.getTasks();
+          //     }),
+          GestureDetector(
+            onTap: () async {
+              await Get.to(() => const AddTaskPage());
+              _taskController.getTasks();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: primaryClr,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -349,7 +367,7 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-    _buildBottomSheet({
+  _buildBottomSheet({
     required String label,
     required Function() onTap,
     required Color clr,
