@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lamakera/services/theme_services.dart';
 import 'package:lamakera/screens/add_task_screen.dart';
-import 'package:lamakera/widgets/button.dart';
+// import 'package:lamakera/widgets/button.dart';
 import 'package:lamakera/widgets/task_tile.dart';
 import 'package:lamakera/controllers/task_controller.dart';
 import '../../models/task.dart';
@@ -57,35 +57,98 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // AppBar _customAppBar() {
+  //   return AppBar(
+  //     elevation: 0,
+  //     backgroundColor: context.theme.scaffoldBackgroundColor,
+  //     actions: [
+  //       IconButton(
+  //         icon: Icon(Icons.delete,
+  //             size: 24, color: Get.isDarkMode ? Colors.white : darkGreyClr),
+  //         onPressed: () {
+  //           notifyHelper.cancelAllNotifications();
+  //           _taskController.deleteAllTasks();
+  //         },
+  //       ),
+  //       const SizedBox(width: 10), // Add spacing between icons
+  //       IconButton(
+  //         onPressed: () {
+  //           ThemeServices().switchTheme();
+  //         },
+  //         icon: Icon(
+  //           Get.isDarkMode
+  //               ? Icons.wb_sunny_outlined
+  //               : Icons.nightlight_round_outlined,
+  //           size: 24,
+  //           color: Get.isDarkMode ? Colors.white : darkGreyClr,
+  //         ),
+  //       ),
+  //       const SizedBox(width: 20),
+  //     ],
+  //     centerTitle: true,
+  //   );
+  // }
   AppBar _customAppBar() {
     return AppBar(
       elevation: 0,
       backgroundColor: context.theme.scaffoldBackgroundColor,
-      actions: [
-        IconButton(
-          icon: Icon(Icons.cleaning_services_outlined,
-              size: 24, color: Get.isDarkMode ? Colors.white : darkGreyClr),
-          onPressed: () {
-            notifyHelper.cancelAllNotifications();
-            _taskController.deleteAllTasks();
-          },
+      title: Text(
+        "Selamat Datang",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Get.isDarkMode ? Colors.white : darkGreyClr,
         ),
-        const SizedBox(width: 10), // Add spacing between icons
-        IconButton(
-          onPressed: () {
-            ThemeServices().switchTheme();
-          },
-          icon: Icon(
-            Get.isDarkMode
-                ? Icons.wb_sunny_outlined
-                : Icons.nightlight_round_outlined,
-            size: 24,
-            color: Get.isDarkMode ? Colors.white : darkGreyClr,
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red
+                  .withOpacity(0.2), // Latar belakang merah transparan
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.delete,
+                size: 24,
+                color: Get.isDarkMode ? Colors.white : darkGreyClr,
+              ),
+              onPressed: () {
+                notifyHelper.cancelAllNotifications();
+                _taskController.deleteAllTasks();
+              },
+            ),
           ),
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 10),
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          // padding: const EdgeInsets.symmetric(horizontal: ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue
+                  .withOpacity(0.2), // Latar belakang biru transparan
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(
+                Get.isDarkMode
+                    ? Icons.wb_sunny_outlined
+                    : Icons.nightlight_round_outlined,
+                size: 24,
+                color: Get.isDarkMode ? Colors.white : darkGreyClr,
+              ),
+              onPressed: () {
+                ThemeServices().switchTheme();
+              },
+            ),
+          ),
+        ),
+        // const SizedBox(width: 10),
       ],
-      centerTitle: true,
+      // centerTitle: true,
     );
   }
 
@@ -120,7 +183,7 @@ class _HomePageState extends State<HomePage> {
               _taskController.getTasks();
             },
             child: Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               decoration: const BoxDecoration(
                 color: primaryClr,
                 shape: BoxShape.circle,
@@ -264,8 +327,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                   SvgPicture.asset(
                     'images/task.svg',
-                    color: primaryClr.withOpacity(0.5),
-                    height: 90,
+                    height: 200,
+                    width: 200,
                     semanticsLabel: 'Task',
                   ),
                   Padding(

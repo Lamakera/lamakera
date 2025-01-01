@@ -61,7 +61,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Edit Tugas", style: headingStyle),
+              // Text("Edit Tugas", style: headingStyle),
               InputField(
                 title: "Judul",
                 hint: "Massukkan judul",
@@ -216,6 +216,15 @@ class _EditTaskPageState extends State<EditTaskPage> {
         CircleAvatar(backgroundImage: AssetImage("images/profile.png")),
         SizedBox(width: 20),
       ],
+      centerTitle: true,
+      title: Text(
+        'Edit Tugas',
+        style: TextStyle(
+          color: Get.isDarkMode ? Colors.white : darkGreyClr,
+          fontSize: 20, // Ukuran font
+          fontWeight: FontWeight.bold, // Gaya font
+        ),
+      ),
     );
   }
 

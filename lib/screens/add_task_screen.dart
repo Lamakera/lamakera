@@ -260,10 +260,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ],
       centerTitle: true,
-      title: const Text(
+      title: Text(
         'Buat Tugas',
         style: TextStyle(
-          color: primaryClr, // Warna teks
+          color: Get.isDarkMode ? Colors.white : darkGreyClr,
           fontSize: 20, // Ukuran font
           fontWeight: FontWeight.bold, // Gaya font
         ),
