@@ -59,20 +59,7 @@ class _HomePageState extends State<HomePage> {
 
   AppBar _customAppBar() {
     return AppBar(
-      leading: IconButton(
-        onPressed: () {
-          ThemeServices().switchTheme();
-        },
-        icon: Icon(
-          Get.isDarkMode
-              ? Icons.wb_sunny_outlined
-              : Icons.nightlight_round_outlined,
-          size: 24,
-          color: Get.isDarkMode ? Colors.white : darkGreyClr,
-        ),
-      ),
       elevation: 0,
-      // ignore: deprecated_member_use
       backgroundColor: context.theme.scaffoldBackgroundColor,
       actions: [
         IconButton(
@@ -83,9 +70,20 @@ class _HomePageState extends State<HomePage> {
             _taskController.deleteAllTasks();
           },
         ),
-        const SizedBox(
-          width: 20,
+        const SizedBox(width: 10), // Add spacing between icons
+        IconButton(
+          onPressed: () {
+            ThemeServices().switchTheme();
+          },
+          icon: Icon(
+            Get.isDarkMode
+                ? Icons.wb_sunny_outlined
+                : Icons.nightlight_round_outlined,
+            size: 24,
+            color: Get.isDarkMode ? Colors.white : darkGreyClr,
+          ),
         ),
+        const SizedBox(width: 20),
       ],
       centerTitle: true,
     );
@@ -101,7 +99,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Today',
+                'Hari Ini',
                 style: subHeadingStyle,
               ),
               Text(
@@ -111,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           MyButton(
-              label: '+ Add Task',
+              label: '+',
               onTap: () async {
                 await Get.to(() => const AddTaskPage());
                 _taskController.getTasks();
@@ -165,7 +163,6 @@ class _HomePageState extends State<HomePage> {
   _showTasks() {
     return Expanded(
       child: Obx(() {
-        // Filter tugas berdasarkan tanggal yang dipilih
         List<Task> filteredTasks = _taskController.taskList.where((task) {
           return task.repeat == 'Daily' ||
               task.date == DateFormat.yMd().format(_selectedDate) ||
@@ -180,7 +177,7 @@ class _HomePageState extends State<HomePage> {
         }).toList();
 
         if (filteredTasks.isEmpty) {
-          return _noTaskMsg(); // Menampilkan pesan jika tidak ada tugas yang sesuai
+          return _noTaskMsg(); // No tasks found
         } else {
           return RefreshIndicator(
             onRefresh: _onRefresh,
@@ -190,12 +187,10 @@ class _HomePageState extends State<HomePage> {
                   : Axis.vertical,
               itemBuilder: (BuildContext context, int index) {
                 var task = filteredTasks[index];
-
                 try {
                   var date = DateFormat.jm().parse(task.startTime!);
                   var myTime = DateFormat('HH:mm').format(date);
 
-                  // Jadwalkan pemberitahuan berdasarkan waktu yang ditentukan
                   notifyHelper.scheduledNotification(
                     int.parse(myTime.toString().split(':')[0]),
                     int.parse(myTime.toString().split(':')[1]),
@@ -251,7 +246,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                   SvgPicture.asset(
                     'images/task.svg',
-                    // ignore: deprecated_member_use
                     color: primaryClr.withOpacity(0.5),
                     height: 90,
                     semanticsLabel: 'Task',
@@ -260,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 10),
                     child: Text(
-                      'You do not have any tasks yet!\nAdd new tasks to make your days productive.',
+                      'Kamu belum memiliki tugas!',
                       style: subTitleStyle,
                       textAlign: TextAlign.center,
                     ),
@@ -307,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                 : Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: _buildBottomSheet(
-                      label: 'Task Completed',
+                      label: 'Tugas Selesai',
                       onTap: () {
                         NotifyHelper().cancelNotification(task);
                         _taskController.markTaskAsCompleted(task.id!);
@@ -319,16 +313,16 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: _buildBottomSheet(
-                  label: 'Edit Task',
+                  label: 'Edit Tugas',
                   onTap: () {
                     Get.to(() => EditTaskPage(task: task));
                   },
-                  clr: orangeClr),
+                  clr: primaryClr),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: _buildBottomSheet(
-                  label: 'Delete Task',
+                  label: 'Hapus Tugas',
                   onTap: () {
                     NotifyHelper().cancelNotification(task);
                     _taskController.deleteTasks(task);
@@ -340,7 +334,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: _buildBottomSheet(
-                  label: 'Cancel',
+                  label: 'Batal',
                   onTap: () {
                     Get.back();
                   },
@@ -355,37 +349,23 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  _buildBottomSheet({
-    required String label,
-    required Function() onTap,
-    required Color clr,
-    bool isClose = false,
-    BorderRadius? borderRadius, // Tambahkan parameter untuk borderRadius
-  }) {
+  _buildBottomSheet({String? label, Function()? onTap, Color? clr}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        height: 65,
-        width: SizeConfig.screenWidth * 0.9,
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          border: Border.all(
-            width: 2,
-            color: isClose
-                ? Get.isDarkMode
-                    ? Colors.grey[600]!
-                    : Colors.grey[300]!
-                : clr,
-          ),
-          borderRadius: borderRadius ??
-              BorderRadius.circular(40), // Gunakan default jika null
-          color: isClose ? Colors.transparent : clr,
+          color: clr,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Center(
-          child: Text(
-            label,
-            style:
-                isClose ? titleStyle : titleStyle.copyWith(color: Colors.white),
+        child: Text(
+          label!,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

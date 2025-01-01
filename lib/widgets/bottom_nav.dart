@@ -42,7 +42,7 @@ class MyBottom extends StatelessWidget {
               children: <Widget>[
                 IconButton(
                   icon: Icon(
-                    Icons.attach_file,
+                    Icons.list,
                     color: bottomNavController.currentIndex.value == 0
                         ? Colors.white
                         : Colors.white,
@@ -54,7 +54,7 @@ class MyBottom extends StatelessWidget {
                 const SizedBox(width: 30),
                 IconButton(
                   icon: Icon(
-                    Icons.keyboard,
+                    Icons.category_outlined,
                     color: bottomNavController.currentIndex.value == 1
                         ? Colors.white
                         : Colors.white,

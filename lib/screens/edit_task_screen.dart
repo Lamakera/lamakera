@@ -61,19 +61,19 @@ class _EditTaskPageState extends State<EditTaskPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Edit Task", style: headingStyle),
+              Text("Edit Tugas", style: headingStyle),
               InputField(
-                title: "Title",
-                hint: "Enter task title",
+                title: "Judul",
+                hint: "Massukkan judul",
                 controller: _titleController,
               ),
               InputField(
-                title: "Note",
-                hint: "Enter task note",
+                title: "Deskripsi",
+                hint: "Masukkan deskripsi",
                 controller: _noteController,
               ),
               InputField(
-                title: "Date",
+                title: "Tanggal",
                 hint: DateFormat.yMd().format(_selectedDate),
                 widget: IconButton(
                   icon: const Icon(Icons.calendar_today_outlined),
@@ -84,7 +84,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 children: [
                   Expanded(
                     child: InputField(
-                      title: "Start Time",
+                      title: "Waktu Mulai",
                       hint: _startTime,
                       widget: IconButton(
                         icon: const Icon(Icons.access_time_rounded),
@@ -95,7 +95,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: InputField(
-                      title: "End Time",
+                      title: "Waktu Selesai",
                       hint: _endTime,
                       widget: IconButton(
                         icon: const Icon(Icons.access_time_rounded),
@@ -106,8 +106,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ],
               ),
               InputField(
-                title: "Remind",
-                hint: "$_selectedRemind minutes early",
+                title: "Ingatkan",
+                hint: "$_selectedRemind menit sebelumnya",
                 widget: DropdownButton(
                   icon:
                       const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
@@ -130,7 +130,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ),
               ),
               InputField(
-                title: "Repeat",
+                title: "Ulangi",
                 hint: _selectedRepeat,
                 widget: DropdownButton(
                   icon:
@@ -144,7 +144,12 @@ class _EditTaskPageState extends State<EditTaskPage> {
                       _selectedRepeat = newValue!;
                     });
                   },
-                  items: ["None", "Daily", "Weekly", "Monthly"]
+                  items: [
+                    "Tidak",
+                    "Setiap Hari",
+                    "Setiap Minggu",
+                    "Setiap Bulan"
+                  ]
                       .map<DropdownMenuItem<String>>(
                           (String value) => DropdownMenuItem<String>(
                                 value: value,
@@ -154,9 +159,9 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 ),
               ),
               InputField(
-                title: "Category",
+                title: "Kategori",
                 hint: _selectedCategory.isEmpty
-                    ? "Select Category"
+                    ? "Pilih Kategori"
                     : _selectedCategory,
                 widget: DropdownButton(
                   icon:
@@ -171,7 +176,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                     });
                   },
                   items: [
-                    "none",
+                    "Tidak Ada",
                     "Kerja",
                     "Kuliah",
                   ]
@@ -188,7 +193,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _colorPalette(),
-                  MyButton(label: "Update Task", onTap: _updateTask),
+                  MyButton(label: "Update Tugas", onTap: _updateTask),
                 ],
               ),
             ],
@@ -218,7 +223,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Color", style: titleStyle),
+        Text("Warna", style: titleStyle),
         const SizedBox(height: 8),
         Wrap(
           children: List<Widget>.generate(
@@ -300,7 +305,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
       remind: _selectedRemind,
       repeat: _selectedRepeat,
       isCompleted: widget.task.isCompleted,
-      category: _selectedCategory, 
+      category: _selectedCategory,
     );
 
     _taskController.updateTask(updatedTask);

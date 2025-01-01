@@ -28,13 +28,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   int _selectedRemind = 5;
   List<int> remindList = [5, 10, 15, 20];
-  String _selectedRepeat = 'None';
-  List<String> repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
+  String _selectedRepeat = 'Tidak';
+  List<String> repeatList = [
+    'Tidak',
+    'Setiap hari',
+    'Setiap minggu',
+    'Setiap bulan'
+  ];
 
   int _selectedColor = 0;
 
-  String _selectedCategory = 'None';
-  List<String> categoryList = ['None', 'Kerja', 'Kuliah'];
+  String _selectedCategory = 'Tidak ada';
+  List<String> categoryList = ['Tidak ada', 'Kerja', 'Kuliah'];
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +53,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
           child: Column(
             children: [
               InputField(
-                title: 'Title',
-                hint: 'Enter title here',
+                title: 'Judul',
+                hint: 'Masukkan judul',
                 controller: _titleController,
               ),
               InputField(
-                title: 'Note',
-                hint: 'Enter note here',
+                title: 'Deskripsi',
+                hint: 'Masukkan deskripsi',
                 controller: _noteController,
               ),
               InputField(
-                title: 'Date',
+                title: 'Tanggal',
                 hint: DateFormat.yMd().format(_selectedDate),
                 widget: IconButton(
                   onPressed: () => _getDateFromUser(),
@@ -72,7 +77,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 children: [
                   Expanded(
                     child: InputField(
-                      title: 'Start Time',
+                      title: 'Waktu Mulai',
                       hint: _startTime,
                       widget: IconButton(
                         onPressed: () => _getTimeFromUser(isStartTime: true),
@@ -88,7 +93,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   Expanded(
                     child: InputField(
-                      title: 'End Time',
+                      title: 'Waktu Selesai',
                       hint: _endTime,
                       widget: IconButton(
                         onPressed: () => _getTimeFromUser(isStartTime: false),
@@ -102,8 +107,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ],
               ),
               InputField(
-                title: 'Remind',
-                hint: '$_selectedRemind minutes early',
+                title: 'Ingatkan',
+                hint: '$_selectedRemind menit sebelumnya',
                 widget: Row(
                   children: [
                     DropdownButton(
@@ -139,7 +144,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
               ),
               InputField(
-                title: 'Repeat',
+                title: 'Ulangi',
                 hint: _selectedRepeat,
                 widget: Row(
                   children: [
@@ -179,7 +184,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 height: 18,
               ),
               InputField(
-                title: 'Category',
+                title: 'Kategori',
                 hint: _selectedCategory,
                 widget: Row(
                   children: [
@@ -224,7 +229,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 children: [
                   _colorPalette(),
                   MyButton(
-                      label: 'Create Task',
+                      label: 'Buat Tugas',
                       onTap: () {
                         _validateData();
                       }),
@@ -256,7 +261,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       ],
       centerTitle: true,
       title: const Text(
-        'AddTask',
+        'Buat Tugas',
         style: TextStyle(
           color: primaryClr, // Warna teks
           fontSize: 20, // Ukuran font
@@ -282,7 +287,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           ));
     } else {
       print(
-          '############################ SOMETHING WRONG HAPPENED #############################');
+          '############################ TERJADI KESALAHAN #############################');
     }
   }
 
@@ -313,7 +318,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Color',
+          'Warna',
           style: titleStyle,
         ),
         const SizedBox(
@@ -363,7 +368,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     if (pickedDate != null) {
       setState(() => _selectedDate = pickedDate);
     } else {
-      print('Please select correct date');
+      print('Pilih tanggal yang tepat');
     }
   }
 
@@ -385,7 +390,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     } else if (!isStartTime) {
       setState(() => _endTime = formattedTime);
     } else {
-      print('Something went wrong !');
+      print('Terjadi kesalahan!');
     }
   }
 }
