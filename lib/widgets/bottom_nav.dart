@@ -45,6 +45,11 @@ class MyBottom extends StatelessWidget {
                     'images/home.png', // Ganti dengan path gambar Anda
                     width: 90, // Sesuaikan ukuran gambar
                     height: 90, // Sesuaikan ukuran gambar
+                  icon: Icon(
+                    Icons.list,
+                    color: bottomNavController.currentIndex.value == 1
+                        ? Colors.white
+                        : Colors.white,
                   ),
                   onPressed: () {
                     bottomNavController.updateIndex(0);
