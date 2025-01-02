@@ -56,7 +56,7 @@ class Onboarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntroScreenOnboarding(
-      backgroundColor: Colors.white,
+      backgroudColor: Colors.white,
       foregroundColor: primaryClr,
       introductionList: list,
       onTapSkipButton: () {
