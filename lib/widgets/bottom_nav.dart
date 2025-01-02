@@ -41,10 +41,11 @@ class MyBottom extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 IconButton(
-                  icon: Image.asset(
-                    'images/tasktest.png', // Ganti dengan path gambar Anda
-                    width: 24, // Sesuaikan ukuran gambar
-                    height: 24, // Sesuaikan ukuran gambar
+                  icon: Icon(
+                    Icons.list,
+                    color: bottomNavController.currentIndex.value == 1
+                        ? Colors.white
+                        : Colors.white,
                   ),
                   onPressed: () {
                     bottomNavController.updateIndex(0);
