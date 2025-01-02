@@ -5,6 +5,7 @@ import '../../models/task.dart';
 import 'package:lamakera/widgets/task_tile.dart';
 import 'package:lamakera/services/db_helper.dart';
 import 'package:get/get.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Library untuk SVG
 
 class MyCategory extends StatefulWidget {
   const MyCategory({Key? key}) : super(key: key);
@@ -29,38 +30,41 @@ class _MyCategoryState extends State<MyCategory> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        // backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+        backgroundColor: context.theme.scaffoldBackgroundColor,
         title: Text(
           'Kategori Tugas',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: headingStyle,
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
-              color: Colors.blueAccent.withOpacity(0.5), // Opacity added
+              color: primaryClr.withOpacity(0.2),
               borderRadius: BorderRadius.circular(40),
             ),
             child: IconButton(
-              icon: const Icon(Icons.filter_list, color: Colors.black),
+              icon: Icon(
+                Icons.list,
+                color: Get.isDarkMode ? Colors.white : Colors.black,
+              ),
               onPressed: () {
                 _showCategoryDialog();
               },
             ),
           ),
         ],
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(
+          color: Get.isDarkMode ? Colors.white : Colors.black,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(
-            top: 30.0, left: 30.0, right: 16.0), // Adding margin to the body
+          top: 40.0,
+        ),
         child: Column(
           children: [
-            SizedBox(height: 16.0), // Adding space between AppBar and content
+            const SizedBox(height: 16.0),
             Expanded(
               child: FutureBuilder<List<Task>>(
                 future: getTasksByCategory(selectedCategory),
@@ -68,9 +72,35 @@ class _MyCategoryState extends State<MyCategory> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: \${snapshot.error}'));
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(
+                          color: Get.isDarkMode ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Tidak ada tugas'));
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            'images/task.svg', // Path SVG baru
+                            height: 200,
+                            width: 200,
+                            semanticsLabel: 'Task Empty',
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Kamu belum memiliki tugas!',
+                            style: subTitleStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
                   }
 
                   List<Task> tasks = snapshot.data!;
@@ -96,14 +126,18 @@ class _MyCategoryState extends State<MyCategory> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Pilih Kategori'),
+          backgroundColor: Get.isDarkMode ? Colors.grey[900] : Colors.white,
+          title: Text(
+            'Pilih Kategori',
+            style: headingStyle,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 title: Text(
                   'Kuliah',
-                  style: titleStyle, // Applying titleStyle
+                  style: subTitleStyle,
                 ),
                 onTap: () {
                   setState(() {
@@ -115,7 +149,7 @@ class _MyCategoryState extends State<MyCategory> {
               ListTile(
                 title: Text(
                   'Kerja',
-                  style: titleStyle, // Applying titleStyle
+                  style: subTitleStyle,
                 ),
                 onTap: () {
                   setState(() {

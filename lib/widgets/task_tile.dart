@@ -13,17 +13,34 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(
-              SizeConfig.orientation == Orientation.landscape ? 4 : 20)),
+        horizontal: getProportionateScreenWidth(
+          SizeConfig.orientation == Orientation.landscape ? 8 : 20,
+        ),
+      ),
       width: SizeConfig.orientation == Orientation.landscape
           ? SizeConfig.screenWidth / 2
           : SizeConfig.screenWidth,
-      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(12)),
+      margin: EdgeInsets.only(bottom: getProportionateScreenHeight(16)),
       child: Container(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: _getBGCLR(task.color)),
+          borderRadius: BorderRadius.circular(30),
+          gradient: LinearGradient(
+            colors: [
+              _getBGCLR(task.color).withOpacity(0.9),
+              _getBGCLR(task.color)
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _getBGCLR(task.color).withOpacity(0.4),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Row(
           children: [
             Expanded(
@@ -34,44 +51,41 @@ class TaskTile extends StatelessWidget {
                     Text(
                       task.title!,
                       style: GoogleFonts.lato(
-                          textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 6, // Mengurangi jarak antar widget
-                    ),
+                    const SizedBox(height: 8),
                     Text(
                       task.note!,
                       style: GoogleFonts.lato(
-                          textStyle: TextStyle(
-                        color: Colors.grey[100],
-                        fontSize: 15,
-                      )),
+                        textStyle: TextStyle(
+                          color: Colors.grey[200],
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      height: 6, // Mengurangi jarak antar widget
-                    ),
+                    const SizedBox(height: 12),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.access_time_rounded,
                           color: Colors.grey[200],
-                          size: 18,
+                          size: 20,
                         ),
-                        const SizedBox(
-                          width: 6, // Mengurangi jarak antar widget
-                        ),
+                        const SizedBox(width: 8),
                         Text(
                           '${task.startTime} - ${task.endTime}',
                           style: GoogleFonts.lato(
-                              textStyle: TextStyle(
-                            color: Colors.grey[100],
-                            fontSize: 10,
-                          )),
+                            textStyle: TextStyle(
+                              color: Colors.grey[100],
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -80,23 +94,25 @@ class TaskTile extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 12),
               height: 60,
-              width: 0.5,
-              color: Colors.grey[200]!.withOpacity(0.7),
+              width: 1,
+              color: Colors.grey[300]!.withOpacity(0.5),
             ),
             RotatedBox(
               quarterTurns: 3,
               child: Text(
-                task.isCompleted == 0 ? 'TODO' : 'Completed',
+                task.isCompleted == 0 ? 'BELUM' : 'SELESAI',
                 style: GoogleFonts.lato(
-                    textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                )),
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

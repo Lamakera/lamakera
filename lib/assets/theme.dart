@@ -60,6 +60,15 @@ TextStyle get subTitleStyle {
   ));
 }
 
+TextStyle get subTitleStyle2 {
+  return GoogleFonts.poppins(
+      textStyle: TextStyle(
+    color: Get.isDarkMode ? Colors.white : Colors.white,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  ));
+}
+
 TextStyle get bodyStyle {
   return GoogleFonts.poppins(
       textStyle: TextStyle(
